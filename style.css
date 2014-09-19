@@ -1,0 +1,24 @@
+body {
+	background: lightgrey;
+	width: 640px;
+	margin: 50px auto;
+	font-size: 25px;
+}
+body * {
+	font-size: 25px;
+}
+input {
+	width: 250px;
+	/*font-size: 18px;*/
+}
+input.error {
+	border: 1px solid red;
+}
+button {
+	/*font-size: 18px;*/
+}
+#error {
+	display: none;
+	color: red;
+	/*font-size: 14px;*/
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div>
+			<input id="ask" type="text" style="width: 400px;">
+			<button>
+				Перевести
+			</button>
+			<div id="error"></div>
+		</div>
+		<div id="number"></div>
+		<div id="roman"></div>
+
+		<div>
+			<input type='texte' id='t' maxlength="3" placeholder="Памятка"/>
+			<span id='lettres' style='font-family:verdana; font-size:11px;' onclick="$('#input').focus().val($.trim($(this).text()))">&nbsp</span>
+		</div>
+
+		<script src="num2letters.js"></script>
+		<script src="jquery-2.1.1.min.js"></script>
+		<script src="bnf.js"></script>
+		<script src="script.js"></script>
+	</body>
+</html>
