@@ -3,39 +3,61 @@ var $ask = $('#ask'),
 	$number = $('#number'),
 	$roman = $('#roman');
 
-names = {
-	3: 'сотого',
-	2: 'десятичного',
-	1: 'единичного'
+function getNumberName(number) {
+	if (number > 0 && number < 10) {
+		return '(единичного порядка)';
+	} else if (number >= 11 && number <=19) {
+		return '(порядка 11-19)';
+	} else if (number >= 20 && number < 100) {
+		return '(десятичного порядка)';
+	} else if (number >= 100) {
+		return '(сотого порядка)';
+	}	
 }
+
 // sept cent soixante-dix-sept
-//  cent quinze  cinquante-cinq
+//
+// 150
+// 1 15 50
+// cent quinze cinquante
+// cent onze  un trente-trois
 $('button').on('click', function() {
 	$error.slideUp();
 	var value = $ask.val().replace(/\s{2,}/g, ' ').trim().toLowerCase(),
 		number = null,
 		length = null;
+
+	if (!value) {
+		return false;
+	}
+
 	try {
-		number = parser.parse(value);
 		number = parser.parse(value);
 		$number.text(number);
 		$roman.text(strToRim(number));
 	} catch (err1) {
-		if (err1.name === 'SyntaxError') {
+		console.log(err1);
+		if (err1.name === 'SyntaxError' && typeof err1.result === 'number') {
 			length = err1.result.toString().length;
 			try {
-				number = parser.parse(value.substr(err1.column))
-				showError('За числом ' + names[length] + ' порядка (' + err1.result + ') не должно следовать число ' + number.toString().length + ' порядка (' + number + ').')
+				var before = value.substr(0, err1.offset).trim().split(' ');
+				number = parser.parse(value.substr(err1.offset).trim());
+				showError('За числом ' + parser.parse(before[before.length-1]) + ' ' + getNumberName(parser.parse(before[before.length-1])) + ' не должно следовать число ' + number + getNumberName(number) + '.');
 			} catch (err2) {
-				showError(err1.message);
+				if (err2 && err2.result && typeof err2.result === 'number') {
+					showError('За числом ' + parser.parse(before[before.length-1]) + ' ' + getNumberName(parser.parse(before[before.length-1])) + ' не должно следовать число ' + number + err2.result + '.');
+				} else {
+					showError(err2.message);
+				}
 			}
+		} else {
+			showError(err1.message);
 		}
 	}
 });
 
 function showError(text) {
 	$error.text(text).slideDown();
-	$ask.addClass('error');
 	$number.text('');
 	$roman.text('');
 }

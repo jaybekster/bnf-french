@@ -264,25 +264,28 @@ parser = (function() {
 
         expectedDesc = expected.length > 1
           ? expectedDescs.slice(0, -1).join(", ")
-              + " or "
+              + " или "
               + expectedDescs[expected.length - 1]
           : expectedDescs[0];
 
-        foundDesc = found ? "\"" + stringEscape(found) + "\"" : "конец ввода";
+        foundDesc = found ? "\"" + stringEscape(found) + "\"" : "окончание ввода";
 
-        var place = peg$currPos + 1;
-        var arr = input.split(' ');
-        for (var i = 0; i< arr.length; i++) {
-
-
-          if (arr[i].length > place) {
-            var word = arr[i];
+        var word = input.split(' '),
+          y = 0,
+          t = 0;
+        for (var z=0; z<=word.length-1; z++) {
+          if (y+=word[z].length >= peg$cachedPos+word.length-1) {
+                t = z;
           }
         }
-        if (word) {
-          return 'Ошибка в словке ' + word;
+
+        if (peg$cachedPos === 0) {
+            return 'Ошибка в слове: ' + word[0] + '.'
         }
-        return "Ожидается " + expectedDesc + ", но написано " + foundDesc + " в позиции " + (peg$currPos + 1) +'. ' + ((preResult && typeof preResult != 'object') ? ' Найденное совпадение - ' + preResult : '');
+
+        // return 'Ошибка в слове: ' + word[t] + '.'
+
+        return "Ожидается " + expectedDesc + ", но написано " + foundDesc + " в позиции " + peg$currPos +'. ' + (typeof preResult === 'number' ? ' Найденное совпадение - ' + preResult : '');
       }
 
       var posDetails = peg$computePosDetails(pos),
@@ -1290,7 +1293,7 @@ parser = (function() {
       return peg$result;
     } else {
       if (peg$result !== peg$FAILED && peg$currPos < input.length) {
-        peg$fail({ type: "end", description: "завершение ввода" });
+        peg$fail({ type: "end", description: "окончание ввода" });
       }
 
       throw peg$buildException(null, peg$maxFailExpected, peg$maxFailPos, peg$result);
