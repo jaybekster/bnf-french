@@ -7,24 +7,27 @@ function getNumberName(number) {
 	if (number > 0 && number < 10) {
 		return '(единичного порядка)';
 	} else if (number >= 11 && number <=19) {
-		return '(порядка 11-19)';
+		return '(числа типа 11-19)';
 	} else if (number >= 20 && number < 100) {
-		return '(десятичного порядка)';
+		return '(десятого порядка)';
 	} else if (number >= 100) {
 		return '(сотого порядка)';
-	}	
+	}
 }
 
 // sept cent soixante-dix-sept
-//
 // 150
 // 1 15 50
 // cent quinze cinquante
 // cent onze  un trente-trois
+// trois trois cent trois trente-trois
+// trois cent cent trois trente-trois
+//   trois treize  trente-trois
 $('button').on('click', function() {
 	$error.slideUp();
 	var value = $ask.val().replace(/\s{2,}/g, ' ').trim().toLowerCase(),
 		number = null,
+		number2 = null;
 		length = null;
 
 	if (!value) {
@@ -36,17 +39,23 @@ $('button').on('click', function() {
 		$number.text(number);
 		$roman.text(strToRim(number));
 	} catch (err1) {
-		console.log(err1);
+		// console.log(err1);
 		if (err1.name === 'SyntaxError' && typeof err1.result === 'number') {
 			length = err1.result.toString().length;
 			try {
 				var before = value.substr(0, err1.offset).trim().split(' ');
 				number = parser.parse(value.substr(err1.offset).trim());
-				showError('За числом ' + parser.parse(before[before.length-1]) + ' ' + getNumberName(parser.parse(before[before.length-1])) + ' не должно следовать число ' + number + getNumberName(number) + '.');
+				number2 = parser.parse(value.substr(err1.offset).trim().split(' ')[0]);
+				// console.log(value.substr(err1.offset).trim().join(' ')[0]);
+				showError('За числом ' + parser.parse(before[before.length-1]) + ' ' + getNumberName(parser.parse(before[before.length-1])) + ' не должно следовать число ' + number2 + ' ' + getNumberName(number2) + '.');
+				// console.log('За числом ' + parser.parse(before[before.length-1]) + ' ' + getNumberName(parser.parse(before[before.length-1])) + ' не должно следовать число ' + number + '.');
 			} catch (err2) {
 				if (err2 && err2.result && typeof err2.result === 'number') {
-					showError('За числом ' + parser.parse(before[before.length-1]) + ' ' + getNumberName(parser.parse(before[before.length-1])) + ' не должно следовать число ' + number + err2.result + '.');
+					number2 = parser.parse(value.substr(err1.offset).trim().split(' ')[0]);
+					showError('За числом ' + parser.parse(before[before.length-1]) + ' ' + getNumberName(parser.parse(before[before.length-1])) + ' не должно следовать число ' + number2 + ' ' + getNumberName(number2) + '.');
+					// console.log('За числом ' + parser.parse(before[before.length-1]) + ' ' + getNumberName(parser.parse(before[before.length-1])) + ' не должно следовать число ' + err2.result + '.');
 				} else {
+					// console.log('За числом ' + parser.parse(before[before.length-1]) + ' ' + getNumberName(parser.parse(before[before.length-1])) + ' не должно следовать число ' + err2.result + '.');
 					showError(err2.message);
 				}
 			}
